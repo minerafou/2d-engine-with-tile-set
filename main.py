@@ -2,8 +2,9 @@
 import pygame
 pygame.init()
 
-#import external class
+#import external class and function
 from player import Player
+from walls import Walls, SetWalls
 
 #classs pricipal
 class Game():
@@ -11,7 +12,7 @@ class Game():
         #set screen related variable
         self.screen = screen
         self.screen_width = screen_width
-        self.screen_width = screen_height
+        self.screen_height = screen_height
 
         #set variable pour le jeu
         self.running = True
@@ -22,6 +23,9 @@ class Game():
 
         #set player
         self.player = Player(100, 100) 
+
+        #set wall
+        self.walls = SetWalls()
 
 
     def Run(self):
@@ -79,22 +83,28 @@ class Game():
                     self.player.SetPressedKey("right")
 
     def Update(self):
+        #update screen size
+        self.screen_width, self.screen_height = self.screen.get_size()
+
         if self.game_screen == "play_scene":
             #delete tous sur l'ecran
             self.screen.fill((240, 240, 240))
 
             #update player pos
-            self.player.UpdatePos()
+            self.player.UpdatePos(self.walls)
 
             #draw player
-            self.player.Draw(self.screen)
+            self.player.Draw(self.screen, self.screen_width, self.screen_height)
+
+            #draw walls
+            for i in self.walls:
+                i.DrawWall(self.screen, self.screen_width, self.screen_height)
     
     def Refresh(self):
         pygame.display.flip()
     
     def EveryTenMilliSecAction(self):
         pass
-
 
 #start un event toute les 10 milli sec
 pygame.time.set_timer(pygame.USEREVENT, 10)

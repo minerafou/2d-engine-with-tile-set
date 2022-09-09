@@ -5,6 +5,8 @@ class Player:
         #init le player
         self.x = x
         self.y = y
+        self.width = 10
+        self.height = 10
 
         self.velocity_x = 0
         self.velocity_y = 0
@@ -20,15 +22,25 @@ class Player:
 
     def Jump(self):
         #jump le player
-        pass
+        self.velocity_y = 10
 
-    def Draw(self, screen):
+    def Draw(self, screen, screen_width, screen_height):
         #set rect
-        player_rect = pygame.Rect(self.x, self.y, 10, 10)
+        player_rect = pygame.Rect(self.x, screen_height - self.y, self.width, self.height)
         pygame.draw.rect(screen, (50, 50, 50), player_rect)
 
-    def UpdatePos(self):
-        #set and update velocity
+    def UpdatePos(self, walls):
+        #update velocity_y
+        self.velocity_y -= 0.5
+
+        #cap velovity_y
+        if self.velocity_y < -7:
+            self.velocity_y = -7
+
+        #check colide and addapt position
+        self.y = self.CheckYCollid(self.x, self.y, walls)
+
+        #set and update velocity_x
         if self.left_pressed:
             self.velocity_x -= 1
         elif self.right_pressed:
@@ -39,18 +51,28 @@ class Player:
             elif self.velocity_x < 0:
                 self.velocity_x += 1
         
-        #cap velovity
+        #cap velovity_x
         if self.velocity_x > 7:
             self.velocity_x = 7
         elif self.velocity_x < -7:
             self.velocity_x = -7
-        print(self.velocity_x)
-
+        
         #update coords
-        self.x += self.velocity_x
+        self.x += self.velocity_x / 2
+        self.y += self.velocity_y
 
         #reset pressed keys
         self.right_pressed = False
         self.left_pressed = False
 
-    
+    def CheckYCollid(self, x, y, walls):
+        temp_player_rect = pygame.Rect(x, y, self.width, self.height)
+        collid = False
+        for i in walls:
+            if temp_player_rect.colliderect(i.GetRect()):
+                collid = True
+                print(i.GetRect())
+                print(temp_player_rect)
+        if collid:
+            y = self.CheckYCollid(x, (y + 1), walls)
+        return y
