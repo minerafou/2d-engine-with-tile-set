@@ -33,7 +33,7 @@ class Game():
             self.HandleEvent()
             self.Update()
             self.Refresh()
-            self.main_clock.tick(60)
+            self.main_clock.tick(2)
     
     def HandleEvent(self):
         #verifie les evenement pygame

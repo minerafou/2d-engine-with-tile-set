@@ -26,7 +26,7 @@ class Player:
 
     def Draw(self, screen, screen_width, screen_height):
         #set rect
-        player_rect = pygame.Rect(self.x, screen_height - self.y, self.width, self.height)
+        player_rect = pygame.Rect(self.x, screen_height - self.y - self.height, self.width, self.height)
         pygame.draw.rect(screen, (50, 50, 50), player_rect)
 
     def UpdatePos(self, walls):
@@ -36,6 +36,9 @@ class Player:
         #cap velovity_y
         if self.velocity_y < -7:
             self.velocity_y = -7
+
+        #update coords y
+        self.y += self.velocity_y
 
         #check colide and addapt position
         self.y = self.CheckYCollid(self.x, self.y, walls)
@@ -57,9 +60,8 @@ class Player:
         elif self.velocity_x < -7:
             self.velocity_x = -7
         
-        #update coords
+        #update coords x
         self.x += self.velocity_x / 2
-        self.y += self.velocity_y
 
         #reset pressed keys
         self.right_pressed = False
@@ -69,10 +71,9 @@ class Player:
         temp_player_rect = pygame.Rect(x, y, self.width, self.height)
         collid = False
         for i in walls:
-            if temp_player_rect.colliderect(i.GetRect()):
+            if i.GetRect().colliderect(temp_player_rect):
                 collid = True
-                print(i.GetRect())
-                print(temp_player_rect)
+                self.velocity_y = 0
         if collid:
-            y = self.CheckYCollid(x, (y + 1), walls)
+            y = self.CheckYCollid(x, (y + 0.5), walls)
         return y
