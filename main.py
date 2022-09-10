@@ -22,7 +22,7 @@ class Game():
         self.main_clock = pygame.time.Clock()
 
         #set player
-        self.player = Player(100, 100) 
+        self.player = Player(100, -500) 
 
         #set wall
         self.walls = SetWalls()
@@ -33,7 +33,7 @@ class Game():
             self.HandleEvent()
             self.Update()
             self.Refresh()
-            self.main_clock.tick(2)
+            self.main_clock.tick(60)
     
     def HandleEvent(self):
         #verifie les evenement pygame
@@ -71,16 +71,17 @@ class Game():
                     if event.key == pygame.K_ESCAPE:
                         self.running = False
                     
-                    #move player
-                    if event.key == pygame.K_SPACE:
-                        self.player.Jump()
-
                 #check for long press
+                #move player
                 keys = pygame.key.get_pressed()
                 if keys[pygame.K_q]:
                     self.player.SetPressedKey("left")
                 if keys[pygame.K_d]:
                     self.player.SetPressedKey("right")
+                
+                #jump player
+                if keys[pygame.K_SPACE]:
+                    self.player.Jump()
 
     def Update(self):
         #update screen size

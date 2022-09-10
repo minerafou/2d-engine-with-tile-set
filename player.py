@@ -5,14 +5,16 @@ class Player:
         #init le player
         self.x = x
         self.y = y
-        self.width = 10
-        self.height = 10
+        self.width = 25
+        self.height = 25
 
         self.velocity_x = 0
         self.velocity_y = 0
 
         self.right_pressed = False
         self.left_pressed = False
+
+        self.jumpable = False
     
     def SetPressedKey(self, dir):
         if dir == "right":
@@ -22,26 +24,34 @@ class Player:
 
     def Jump(self):
         #jump le player
-        self.velocity_y = 10
+        #check if player can jump
+        if self.jumpable:
+            self.velocity_y = -10
 
     def Draw(self, screen, screen_width, screen_height):
         #set rect
-        player_rect = pygame.Rect(self.x, screen_height - self.y - self.height, self.width, self.height)
-        pygame.draw.rect(screen, (50, 50, 50), player_rect)
+        player_rect = pygame.Rect(self.x, self.y + screen_height, self.width, self.height)
+        pygame.draw.rect(screen, (0, 50, 50), player_rect)
 
     def UpdatePos(self, walls):
+        #set the jump statut to false
+        self.jumpable = False
+
         #update velocity_y
-        self.velocity_y -= 0.5
+        self.velocity_y += 0.5
 
         #cap velovity_y
-        if self.velocity_y < -7:
-            self.velocity_y = -7
+        if self.velocity_y > 7:
+            self.velocity_y = 7
 
         #update coords y
         self.y += self.velocity_y
 
         #check colide and addapt position
-        self.y = self.CheckYCollid(self.x, self.y, walls)
+        if self.velocity_y > 0:
+            self.x, self.y = self.CheckCollid(self.x, self.y, walls, "down")
+        else:
+            self.x, self.y = self.CheckCollid(self.x, self.y, walls, "up")
 
         #set and update velocity_x
         if self.left_pressed:
@@ -63,17 +73,42 @@ class Player:
         #update coords x
         self.x += self.velocity_x / 2
 
+        #check collition left right
+        if self.velocity_x > 0:
+            self.x, self.y = self.CheckCollid(self.x, self.y, walls, "right")
+        else:
+            self.x, self.y = self.CheckCollid(self.x, self.y, walls, "left")
+
         #reset pressed keys
         self.right_pressed = False
         self.left_pressed = False
 
-    def CheckYCollid(self, x, y, walls):
+    def CheckCollid(self, x, y, walls, dir):
+        #set player rect
         temp_player_rect = pygame.Rect(x, y, self.width, self.height)
+
+        #set default variable
         collid = False
+
+        #check collition
         for i in walls:
-            if i.GetRect().colliderect(temp_player_rect):
+            if temp_player_rect.colliderect(i.GetRect()):
                 collid = True
-                self.velocity_y = 0
+                if dir == "up" or dir == "down":
+                    self.velocity_y = 0
+                elif dir == "left" or dir == "right":
+                    self.velocity_x = 0
+                #check if player can jump
+                if dir == "down":
+                    self.jumpable = True
         if collid:
-            y = self.CheckYCollid(x, (y + 0.5), walls)
-        return y
+            #do recurtion to sitck perfect to the block
+            if dir == "down":
+                x, y = self.CheckCollid(x, (y - 0.5), walls, dir)
+            elif dir == "up":
+                x, y = self.CheckCollid(x, (y + 0.5), walls, dir)
+            elif dir == "right":
+                x, y = self.CheckCollid((x - 0.5), y, walls, dir)
+            elif dir == "left":
+                x, y = self.CheckCollid((x + 0.5), y, walls, dir)
+        return x, y
