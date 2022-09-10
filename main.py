@@ -118,7 +118,7 @@ class Game():
         player_x, player_y = self.player.GetPos()
 
         #move camera x
-        if player_x < self.screen_width + camera_x - 200:
+        if player_x > self.screen_width + camera_x - 200:
             camera_x = player_x - (self.screen_width - 200)
         if player_x < camera_x + 200:
             camera_x = player_x - 200
