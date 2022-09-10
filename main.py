@@ -105,6 +105,7 @@ class Game():
                 i.DrawWall(self.screen, self.screen_height, self.camera_x, self.camera_y)
 
             #check for camera
+            self.camera_x, self.camera_y = self.CheckCamera(self.camera_x, self.camera_y)
     
     def Refresh(self):
         pygame.display.flip()
@@ -112,13 +113,31 @@ class Game():
     def EveryTenMilliSecAction(self):
         pass
 
+    def CheckCamera(self, camera_x, camera_y):
+        #get player pos
+        player_x, player_y = self.player.GetPos()
+
+        #move camera if
+        if player_x > self.screen_width + camera_x - 200:
+            camera_x = player_x - (self.screen_width - 200)
+        if player_x < camera_x + 200:
+            camera_x = player_x - 200
+
+        #cap camera
+        if camera_x < 0:
+            camera_x = 0
+        if camera_y < 0:
+            camera_y = 0
+
+        return camera_x, camera_y
+
 #start un event toute les 10 milli sec
 pygame.time.set_timer(pygame.USEREVENT, 10)
 
 #set taille fenetre
-screen_width = 1200
+screen_width = 800
 
-screen_height = 800
+screen_height = 600
 
 #set la fenetre
 screen = pygame.display.set_mode((screen_width, screen_height), pygame.RESIZABLE)

@@ -112,3 +112,5 @@ class Player:
             elif dir == "left":
                 x, y = self.CheckCollid((x + 0.5), y, walls, dir)
         return x, y
+    def GetPos(self):
+        return self.x, self.y
