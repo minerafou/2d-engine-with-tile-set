@@ -41,8 +41,8 @@ class Player:
         self.velocity_y += 0.5
 
         #cap velovity_y
-        if self.velocity_y > 7:
-            self.velocity_y = 7
+        if self.velocity_y > 15:
+            self.velocity_y = 15
 
         #update coords y
         self.y += self.velocity_y

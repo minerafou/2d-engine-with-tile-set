@@ -22,7 +22,7 @@ class Game():
         self.main_clock = pygame.time.Clock()
 
         #set player
-        self.player = Player(100, -500) 
+        self.player = Player(100, -200) 
 
         #set wall
         self.walls = SetWalls()
@@ -117,17 +117,24 @@ class Game():
         #get player pos
         player_x, player_y = self.player.GetPos()
 
-        #move camera if
-        if player_x > self.screen_width + camera_x - 200:
+        #move camera x
+        if player_x < self.screen_width + camera_x - 200:
             camera_x = player_x - (self.screen_width - 200)
         if player_x < camera_x + 200:
             camera_x = player_x - 200
+        
+        #move camera y
+        if player_y < -1 * self.screen_height + camera_y + 100:
+            camera_y = player_y - (-1 * self.screen_height + 100)
+        if player_y > camera_y - 200:
+            camera_y = player_y + 200
 
         #cap camera
         if camera_x < 0:
             camera_x = 0
-        if camera_y < 0:
+        if camera_y > 0:
             camera_y = 0
+
 
         return camera_x, camera_y
 
