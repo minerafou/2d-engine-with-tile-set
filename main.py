@@ -27,6 +27,10 @@ class Game():
         #set wall
         self.walls = SetWalls()
 
+        #variable camera
+        self.camera_x = 0
+        self.camera_y = 0
+
 
     def Run(self):
         while self.running:
@@ -38,7 +42,6 @@ class Game():
     def HandleEvent(self):
         #verifie les evenement pygame
         for event in pygame.event.get():
-
             #check des input joueur
             #input de la croix rouge (en haut a droite de la fenetre)
             if event.type == pygame.QUIT:
@@ -95,11 +98,13 @@ class Game():
             self.player.UpdatePos(self.walls)
 
             #draw player
-            self.player.Draw(self.screen, self.screen_width, self.screen_height)
+            self.player.Draw(self.screen, self.screen_height, self.camera_x, self.camera_y)
 
             #draw walls
             for i in self.walls:
-                i.DrawWall(self.screen, self.screen_width, self.screen_height)
+                i.DrawWall(self.screen, self.screen_height, self.camera_x, self.camera_y)
+
+            #check for camera
     
     def Refresh(self):
         pygame.display.flip()

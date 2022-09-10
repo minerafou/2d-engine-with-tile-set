@@ -5,7 +5,7 @@ def SetWalls():
     walls = []
     walls_x =      [    0,  300,  375,  450,  525]
     walls_y =      [  -75, -150, -300, -150, -225]
-    walls_width =  [ 1000,   75,   75,   75,   75]
+    walls_width =  [10000,   75,   75,   75,   75]
     walls_height = [   75,   75,   75,   75,  150]
     for i in range(len(walls_x)):
         walls.append(Walls(walls_x[i], walls_y[i], walls_width[i], walls_height[i]))
@@ -18,9 +18,9 @@ class Walls():
         self.y = y
         self.width = width
         self.height = height
-    def DrawWall(self, screen, screen_width, screen_height):
+    def DrawWall(self, screen, screen_height, camera_x, camera_y):
         #set rect
-        wall_rect = pygame.Rect(self.x, self.y + screen_height, self.width, self.height)
+        wall_rect = pygame.Rect(self.x - camera_x, self.y + screen_height - camera_y, self.width, self.height)
         #draw rect
         pygame.draw.rect(screen, (50, 50, 50), wall_rect)
     def GetRect(self):

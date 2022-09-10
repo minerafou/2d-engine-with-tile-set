@@ -28,9 +28,9 @@ class Player:
         if self.jumpable:
             self.velocity_y = -10
 
-    def Draw(self, screen, screen_width, screen_height):
+    def Draw(self, screen, screen_height, camera_x, camera_y):
         #set rect
-        player_rect = pygame.Rect(self.x, self.y + screen_height, self.width, self.height)
+        player_rect = pygame.Rect(self.x - camera_x, self.y + screen_height - camera_y, self.width, self.height)
         pygame.draw.rect(screen, (0, 50, 50), player_rect)
 
     def UpdatePos(self, walls):
