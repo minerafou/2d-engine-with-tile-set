@@ -4,8 +4,7 @@ pygame.init()
 
 #import external class and function
 from player import Player
-from walls import Walls
-
+from level import Level 
 #classs pricipal
 class Game():
     def __init__(self, screen, screen_width, screen_height):
@@ -23,25 +22,10 @@ class Game():
 
         #set player
         self.player = Player(100, -500) 
-
-        #set wall
-        self.walls = []
         
-        if True:                                     #* Possiblitité de plusieur level (code global a adapter)
-            walls_color = (50,50,50)          
-            wall_number = 7
-            walls_x =      [    0,  300,  375,  450,  525,  600,    0]
-            walls_y =      [  -75, -150, -300, -150, -225, -150, -500]
-            walls_width =  [10000,   75,   75,   75,   75,   75,   75]
-            walls_height = [   75,   75,   75,   75,  150,   75,  450]
-            
-            if wall_number * 4 == len(walls_x) + len(walls_y) +len(walls_width) + len(walls_height):  #? So gross mais ça marche (en gros check si la liste des walls est bien construite)
-                for i in range(wall_number):
-                    self.walls.append(Walls(walls_x[i], walls_y[i], walls_width[i], walls_height[i], walls_color ))
-            else:
-                print("[Walls 1] [-]   Walls' list isn't in the good shape ")
-            
-            
+        
+        self.level = Level(1)
+          
         #variable camera
         self.camera_x = 0
         self.camera_y = 0
@@ -113,13 +97,13 @@ class Game():
             self.screen.fill((240, 240, 240))
 
             #update player pos
-            self.player.UpdatePos(self.walls)
+            self.player.UpdatePos(self.level.walls)
 
             #draw player
             self.player.Draw(self.screen, self.screen_height, self.camera_x, self.camera_y)
 
-            #draw walls
-            for i in self.walls:
+            #draw level.walls
+            for i in self.level.walls:
                 i.DrawWall(self.screen, self.screen_height, self.camera_x, self.camera_y)
 
             #check for camera
