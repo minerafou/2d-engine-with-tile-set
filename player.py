@@ -6,7 +6,7 @@ class Player:
         self.x = x
         self.y = y
         self.width = 25
-        self.height = 25
+        self.height = 25 
 
         self.velocity_x = 0
         self.velocity_y = 0
@@ -22,6 +22,8 @@ class Player:
         if dir == "left":
             self.left_pressed = True
 
+
+    #? à mettre dans SetPressedKey()
     def Jump(self):
         #jump le player
         #check if player can jump
@@ -34,9 +36,12 @@ class Player:
         pygame.draw.rect(screen, (0, 50, 50), player_rect)
 
     def UpdatePos(self, walls):
+        
+        #? au lieu de mettre la variable en False pendant le saut, checker dans Jump() si il peut
         #set the jump statut to false
         self.jumpable = False
 
+        #? mettre la velocity sous forme velocity = [x,y] au lieu de 2 variable distincte 
         #update velocity_y
         self.velocity_y += 0.5
 
@@ -47,12 +52,15 @@ class Player:
         #update coords y
         self.y += self.velocity_y
 
+        #? Je sais pas comment dire mais Mehhh.
         #check colide and addapt position
         if self.velocity_y > 0:
             self.x, self.y = self.CheckCollid(self.x, self.y, walls, "down")
         else:
             self.x, self.y = self.CheckCollid(self.x, self.y, walls, "up")
 
+
+        #?  !??? redondance avec SetPressedKey ???!
         #set and update velocity_x
         if self.left_pressed:
             self.velocity_x -= 1
@@ -64,6 +72,8 @@ class Player:
             elif self.velocity_x < 0:
                 self.velocity_x += 1
         
+        
+        #?detection de la velocity (tag ou variable) pour des applications plus pousser 
         #cap velovity_x
         if self.velocity_x > 7:
             self.velocity_x = 7
