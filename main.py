@@ -4,7 +4,7 @@ pygame.init()
 
 #import external class and function
 from player import Player
-from walls import Walls, SetWalls
+from levels import SetLevel
 
 #classs pricipal
 class Game():
@@ -24,8 +24,9 @@ class Game():
         #set player
         self.player = Player(100, -200) 
 
-        #set wall
-        self.walls = SetWalls()
+        #set level
+        self.level_number = 1
+        self.level = SetLevel(self.level_number)
 
         #variable camera
         self.camera_x = 0
@@ -83,8 +84,7 @@ class Game():
                     self.player.SetPressedKey("right")
                 
                 #jump player
-                if keys[pygame.K_SPACE]:
-                    self.player.Jump()
+                self.player.Jump(keys[pygame.K_SPACE])
 
     def Update(self):
         #update screen size
@@ -95,13 +95,13 @@ class Game():
             self.screen.fill((240, 240, 240))
 
             #update player pos
-            self.player.UpdatePos(self.walls)
+            self.player.UpdatePos(self.level)
 
             #draw player
             self.player.Draw(self.screen, self.screen_height, self.camera_x, self.camera_y)
 
             #draw walls
-            for i in self.walls:
+            for i in self.level:
                 i.DrawWall(self.screen, self.screen_height, self.camera_x, self.camera_y)
 
             #check for camera

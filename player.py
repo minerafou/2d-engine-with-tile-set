@@ -14,7 +14,13 @@ class Player:
         self.right_pressed = False
         self.left_pressed = False
 
-        self.jumpable = False
+        self.is_in_air = True
+
+        self.velocity_x_cap = 8
+        self.velocity_y_cap = 15
+
+        self.number_of_jump = 2
+        self.jump_left = 0
     
     def SetPressedKey(self, dir):
         if dir == "right":
@@ -22,11 +28,22 @@ class Player:
         if dir == "left":
             self.left_pressed = True
 
-    def Jump(self):
+    def Jump(self, space_state):
         #jump le player
         #check if player can jump
-        if self.jumpable:
-            self.velocity_y = -10
+        if space_state:
+            #check if can jump
+            if self.jump_left > 0:
+                #check if first jump
+                if self.jump_left == self.number_of_jump:
+                    self.jump_left -= 1
+                    self.velocity_y = -10
+                else:
+                    if not self.previous_state:
+                        self.jump_left -= 1
+                        self.velocity_y = -10
+
+        self.previous_state = space_state
 
     def Draw(self, screen, screen_height, camera_x, camera_y):
         #set rect
@@ -35,14 +52,14 @@ class Player:
 
     def UpdatePos(self, walls):
         #set the jump statut to false
-        self.jumpable = False
+        self.is_in_air = True
 
         #update velocity_y
         self.velocity_y += 0.5
 
         #cap velovity_y
-        if self.velocity_y > 15:
-            self.velocity_y = 15
+        if self.velocity_y > self.velocity_y_cap:
+            self.velocity_y = self.velocity_y_cap
 
         #update coords y
         self.y += self.velocity_y
@@ -52,6 +69,10 @@ class Player:
             self.x, self.y = self.CheckCollid(self.x, self.y, walls, "down")
         else:
             self.x, self.y = self.CheckCollid(self.x, self.y, walls, "up")
+        
+        #reset jump_count
+        if not self.is_in_air:
+            self.jump_left = self.number_of_jump
 
         #set and update velocity_x
         if self.left_pressed:
@@ -65,10 +86,10 @@ class Player:
                 self.velocity_x += 1
         
         #cap velovity_x
-        if self.velocity_x > 7:
-            self.velocity_x = 7
-        elif self.velocity_x < -7:
-            self.velocity_x = -7
+        if self.velocity_x > self.velocity_x_cap:
+            self.velocity_x = self.velocity_x_cap
+        elif self.velocity_x < -self.velocity_x_cap:
+            self.velocity_x = -self.velocity_x_cap
         
         #update coords x
         self.x += self.velocity_x / 2
@@ -96,21 +117,23 @@ class Player:
                 collid = True
                 if dir == "up" or dir == "down":
                     self.velocity_y = 0
+                    collided_wall = i.GetRect()
                 elif dir == "left" or dir == "right":
                     self.velocity_x = 0
+                    collided_wall = i.GetRect()
                 #check if player can jump
                 if dir == "down":
-                    self.jumpable = True
+                    self.is_in_air = False
         if collid:
             #do recurtion to sitck perfect to the block
             if dir == "down":
-                x, y = self.CheckCollid(x, (y - 0.5), walls, dir)
+                x, y = x, collided_wall[1] - self.height
             elif dir == "up":
-                x, y = self.CheckCollid(x, (y + 0.5), walls, dir)
+                x, y = x, collided_wall[1] + collided_wall[3]
             elif dir == "right":
-                x, y = self.CheckCollid((x - 0.5), y, walls, dir)
+                x, y = collided_wall[0] - self.width, y
             elif dir == "left":
-                x, y = self.CheckCollid((x + 0.5), y, walls, dir)
+                x, y = collided_wall[0] + collided_wall[2], y
         return x, y
     def GetPos(self):
         return self.x, self.y
