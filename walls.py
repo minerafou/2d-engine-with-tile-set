@@ -1,18 +1,19 @@
 import pygame
 
 class Walls():
-    def __init__(self, x, y, width, height, color, tag):
+    def __init__(self, block):
         #init coord
-        self.x = x
-        self.y = y
-        self.width = width
-        self.height = height
-        self.color = color
-        self.tag = tag
-    def DrawWall(self, screen, screen_height, camera_x, camera_y):
-        #set rect
-        wall_rect = pygame.Rect(self.x - camera_x, self.y + screen_height - camera_y, self.width, self.height)
-        #draw rect
-        pygame.draw.rect(screen, self.color, wall_rect)
-    def GetRect(self):
-        return pygame.Rect(self.x, self.y, self.width, self.height)
+        self.block = block
+        
+
+    def DrawWall(self, screen, screen_height, camera_x, camera_y, x, y, number_of_height, level, tile, tile_size):
+        screen.blit(tile, ((x * tile_size) - camera_x, (y * tile_size) - camera_y - (number_of_height * tile_size) + screen_height))
+    
+    def GetRect(self, y, x, number_of_height, tile_size):
+        return pygame.Rect(x * tile_size, y * tile_size - (number_of_height) * tile_size, tile_size, tile_size)
+    
+    def GetBlock(self):
+        return self.block
+
+
+ 

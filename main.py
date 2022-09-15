@@ -4,7 +4,7 @@ pygame.init()
 
 #import external class and function
 from player import Player
-from levels import SetLevel
+from levels import Level
 
 #classs pricipal
 class Game():
@@ -22,16 +22,16 @@ class Game():
         self.main_clock = pygame.time.Clock()
 
         #set player
-        self.player = Player(100, -200) 
+        self.player = Player(100, -200, (0, 50, 50)) 
 
         #set level
-        self.level_number = 1
-        self.level = SetLevel(self.level_number)
+        self.level_num = 1
+        self.current_level = Level(self.level_num)
+        self.level = self.current_level.GetLevel()
 
         #variable camera
         self.camera_x = 0
         self.camera_y = 0
-
 
     def Run(self):
         while self.running:
@@ -78,10 +78,8 @@ class Game():
                 #check for long press
                 #move player
                 keys = pygame.key.get_pressed()
-                if keys[pygame.K_q]:
-                    self.player.SetPressedKey("left")
-                if keys[pygame.K_d]:
-                    self.player.SetPressedKey("right")
+                if keys[pygame.K_q] or keys[pygame.K_d]:
+                    self.player.SetPressedKey(keys)
                 
                 #jump player
                 self.player.Jump(keys[pygame.K_SPACE])
@@ -95,14 +93,13 @@ class Game():
             self.screen.fill((240, 240, 240))
 
             #update player pos
-            self.player.UpdatePos(self.level)
+            self.player.UpdatePos(self.level, self.current_level.GetTileSize())
+
+            #draw level
+            self.current_level.DrawLevel(self.screen, self.screen_height, self.camera_x, self.camera_y)
 
             #draw player
             self.player.Draw(self.screen, self.screen_height, self.camera_x, self.camera_y)
-
-            #draw walls
-            for i in self.level:
-                i.DrawWall(self.screen, self.screen_height, self.camera_x, self.camera_y)
 
             #check for camera
             self.camera_x, self.camera_y = self.CheckCamera(self.camera_x, self.camera_y)
